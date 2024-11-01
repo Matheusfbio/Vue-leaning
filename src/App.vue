@@ -1,7 +1,6 @@
 <script setup lang="ts">
+import './assets/index.css'
 import { RouterLink, RouterView } from 'vue-router'
-// import ShowDataUser from './components/user/ShowDataUsers.vue'
-import RenderCondition from './components/conditions/RenderCondition.vue'
 </script>
 
 <template>
@@ -14,16 +13,16 @@ import RenderCondition from './components/conditions/RenderCondition.vue'
       height="125"
     /> -->
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
+    <div
+      class="flex justify-between text-center items-center bg-blue-500 mr-[1150px]"
+    >
       <nav>
         <RouterLink to="/">Home</RouterLink>
+      </nav>
+      <nav>
         <RouterLink to="/about">About</RouterLink>
       </nav>
     </div>
   </header>
-  <!-- <ShowDataUser /> -->
-  <RenderCondition />
   <RouterView />
 </template>

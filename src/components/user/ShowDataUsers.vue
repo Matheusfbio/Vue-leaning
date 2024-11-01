@@ -1,9 +1,16 @@
 <script setup lang="ts">
-const name = 'Matheus fabio'
+import Button from '../ui/button/Button.vue'
+
+const users = ['Matheus', 'João', 'Natan', 'Lucyellici']
 </script>
 
 <template>
   <main>
-    <h1>accont: {{ name }}</h1>
+    <ul>
+      <h1 v-for="user in users" :key="user">Cliente: {{ user }}</h1>
+    </ul>
+    <div>
+      <Button variant="secondary">Forms</Button>
+    </div>
   </main>
 </template>

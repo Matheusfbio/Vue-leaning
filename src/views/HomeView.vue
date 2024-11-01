@@ -1,5 +1,7 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import ShowDataUser from '../components/user/ShowDataUsers.vue'
+</script>
 
 <template>
-  <main></main>
+  <main><ShowDataUser /></main>
 </template>
