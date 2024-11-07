@@ -13,9 +13,7 @@ import { RouterLink, RouterView } from 'vue-router'
       height="125"
     /> -->
 
-    <div
-      class="flex justify-between text-center items-center bg-blue-500 mr-[1150px]"
-    >
+    <div class="flex space-x-3">
       <nav>
         <RouterLink to="/">Home</RouterLink>
       </nav>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ShowUser from '@/components/user/ShowUsers.vue'
+import ShowUser from '@/interface/components/user/ShowUsers.vue'
 </script>
 
 <template>
