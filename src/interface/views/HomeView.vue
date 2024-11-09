@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import ShowUser from '@/interface/components/user/ShowUsers.vue'
+import ShowUser from "@/interface/components/user/ShowUsers.vue";
 </script>
 
 <template>
-  <main><ShowUser /></main>
+  <main class="bg-red-900 px-[5%]"><ShowUser /></main>
 </template>
