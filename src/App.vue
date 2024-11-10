@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import "./assets/index.css";
-import { RouterLink, RouterView } from "vue-router";
+import './assets/index.css'
+import { RouterLink, RouterView } from 'vue-router'
 </script>
 
 <template>
