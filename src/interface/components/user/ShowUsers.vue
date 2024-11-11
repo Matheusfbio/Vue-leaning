@@ -1,41 +1,39 @@
 <template>
-  <main class="bg-green-400">
-    <strong class="flex justify-center text-3xl items-center py-3"
-      >Lista de Diaristas</strong
-    >
+  <main class="">
+    <strong class="flex justify-center text-3xl items-center py-3">
+      Diaristas disponíveis
+    </strong>
     <ul class="flex flex-wrap justify-center items-center">
       <li
         v-for="user in users"
         :key="user.id"
-        class="flex flex-col border-2 bg-orange-400 border-black p-6 m-3 justify-center items-center"
+        class="flex flex-col border-2 rounded-xl border-black p-6 m-3 justify-center items-center"
       >
-        <!-- <img src="/src/assets/img/MatheuseLucy.png" width="150" /> -->
-        <strong>Nome</strong> {{ user.name }} <br />
-        <strong>Email</strong> {{ user.email }} <br />
-        <strong>Telefone</strong> {{ user.phone }} <br />
-        <!-- <strong>Endereço</strong> {{ user.address.street }} <br />
-        <strong>Cidade</strong> {{ user.address.city }} -->
+        <img :src="user.perfil" alt="Foto de perfil" width="150" />
+        {{ user.nome }} <br />
+        {{ user.email }} <br />
+        {{ user.contato }} <br />
+        {{ user.endereco }} <br />
+        {{ user.cidade }}
+        <br />
       </li>
     </ul>
   </main>
 </template>
 
 <script lang="ts">
-import fetchStrapiCms from '@/infra/services/fetchUsers'
-
+import fetchUsers from '@/infra/services/fetchUsers'
 import { defineComponent } from 'vue'
 
-// interface Address {
-//   street: string
-//   city: string
-// }
-
+// Define a interface do tipo de usuário
 interface User {
   id: number
-  name: string
+  nome: string
+  contato: string
   email: string
-  phone: string
-  // address: Address
+  endereco: string
+  cidade: string
+  perfil: string // URL da imagem de perfil
 }
 
 export default defineComponent({
@@ -45,8 +43,18 @@ export default defineComponent({
     }
   },
   async mounted() {
-    // Chame a função e atribua o resultado a 'users'
-    this.users = await fetchStrapiCms()
+    // Chame a função de serviço e atribua o resultado a 'users'
+    const response = await fetchUsers()
+    // Extrai os dados e ajusta a URL da imagem de perfil
+    this.users = response.map(user => ({
+      id: user.id,
+      nome: user.nome,
+      contato: user.contato,
+      email: user.email,
+      endereco: user.endereco,
+      cidade: user.cidade,
+      perfil: `http://localhost:1337${user.perfil[0]?.formats.thumbnail.url}`, // Ajuste a URL do perfil
+    }))
   },
 })
 </script>

@@ -4,7 +4,9 @@ import { RouterLink, RouterView } from 'vue-router'
 </script>
 
 <template>
-  <header class="flex space-x-6 bg-blue-300 py-2 justify-start items-center">
+  <header
+    class="flex space-x-6 border-b-[3px] border-black py-2 justify-start items-center"
+  >
     <img alt="logo" src="../src//assets/diarista-online.png" width="40" />
     <div class="ml-2 text-2xl">
       <RouterLink to="/">Home</RouterLink>
