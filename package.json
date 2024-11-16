@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
-    "test:unit": "vitest",
+    "test:unit": "vitest --inspect",
     "test:e2e": "start-server-and-test preview http://localhost:4173 'cypress run --e2e'",
     "test:e2e:dev": "start-server-and-test 'vite dev --port 4173' http://localhost:4173 'cypress open --e2e'",
     "build-only": "vite build",
@@ -16,7 +16,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
-    "@vee-validate/zod": "^4.14.6",
+    "@vee-validate/zod": "^4.14.7",
     "@vueuse/core": "^11.2.0",
     "axios": "^1.7.7",
     "class-variance-authority": "^0.7.0",
@@ -25,7 +25,7 @@
     "radix-vue": "^1.9.8",
     "tailwind-merge": "^2.5.4",
     "tailwindcss-animate": "^1.0.7",
-    "vee-validate": "^4.14.6",
+    "vee-validate": "^4.14.7",
     "vue": "^3.5.12",
     "vue-router": "^4.4.5",
     "zod": "^3.23.8"

@@ -1,5 +1,52 @@
+<script lang="ts">
+import fetchDiarist from '@/infra/services/fetchDiarist'
+import { defineComponent, onMounted, ref } from 'vue'
+
+// Define a interface do tipo de usuário
+interface User {
+  id: number
+  nome: string
+  contato: string
+  email: string
+  endereco: string
+  cidade: string
+  perfil: string // URL da imagem de perfil
+}
+
+export default defineComponent({
+  setup() {
+    // Cria uma referência reativa para armazenar os usuários
+    const users = ref<User[]>([])
+
+    // Função para buscar e configurar os dados dos usuários
+    const loadUsers = async () => {
+      const response = await fetchDiarist()
+      users.value = response.map(user => ({
+        id: user.id,
+        nome: user.nome,
+        contato: user.contato,
+        email: user.email,
+        endereco: user.endereco,
+        cidade: user.cidade,
+        perfil: user.perfil[0]?.formats.thumbnail.url
+          ? `http://localhost:1337${user.perfil[0]?.formats.thumbnail.url}`
+          : '', // A URL da imagem de perfil
+      }))
+    }
+
+    // Chama a função ao montar o componente
+    onMounted(loadUsers)
+
+    // Retorna as variáveis para serem usadas no template
+    return {
+      users,
+    }
+  },
+})
+</script>
+
 <template>
-  <main class="">
+  <main>
     <strong class="flex justify-center text-3xl items-center py-3">
       Diaristas disponíveis
     </strong>
@@ -20,41 +67,3 @@
     </ul>
   </main>
 </template>
-
-<script lang="ts">
-import fetchUsers from '@/infra/services/fetchUsers'
-import { defineComponent } from 'vue'
-
-// Define a interface do tipo de usuário
-interface User {
-  id: number
-  nome: string
-  contato: string
-  email: string
-  endereco: string
-  cidade: string
-  perfil: string // URL da imagem de perfil
-}
-
-export default defineComponent({
-  data() {
-    return {
-      users: [] as User[], // Define o tipo do array de usuários
-    }
-  },
-  async mounted() {
-    // Chame a função de serviço e atribua o resultado a 'users'
-    const response = await fetchUsers()
-    // Extrai os dados e ajusta a URL da imagem de perfil
-    this.users = response.map(user => ({
-      id: user.id,
-      nome: user.nome,
-      contato: user.contato,
-      email: user.email,
-      endereco: user.endereco,
-      cidade: user.cidade,
-      perfil: `http://localhost:1337${user.perfil[0]?.formats.thumbnail.url}`, // Ajuste a URL do perfil
-    }))
-  },
-})
-</script>

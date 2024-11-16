@@ -1,70 +1,153 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import Button from '../components/ui/button/Button.vue'
-import { Input } from '../components/ui/input'
+import { AutoForm, AutoFormField } from '@/interface/components/ui/auto-form'
+import { Button } from '@/interface/components/ui/button'
+import { toast } from '@/interface/components/ui/toast'
+import { h } from 'vue'
+import * as z from 'zod'
 
-const name = ref('')
-const email = ref('')
-const phone = ref('')
-const address = ref('')
-const city = ref('')
-</script>
-<template>
-  <main class="flex-1 flex-col p-2">
-    <nav>
-      <div class="relative w-full max-w-sm items-center space-y-4">
-        <Input
-          id="search"
-          type="text"
-          placeholder="Nome completo"
-          class="pl-10"
-          v-model="name"
-        />
-        <p>Name: {{ name }}</p>
-        <Input
-          id="search"
-          type="text"
-          placeholder="email"
-          class="pl-10"
-          v-model="email"
-        />
-        <p>Email: {{ email }}</p>
-        <Input
-          id="search"
-          type="text"
-          placeholder="telefone"
-          class="pl-10"
-          v-model="phone"
-        />
-        <p>Phone: {{ phone }}</p>
-        <Input
-          id="search"
-          type="text"
-          placeholder="endereço"
-          class="pl-10"
-          v-model="address"
-        />
-        <p>Endereço: {{ address }}</p>
-        <Input
-          id="search"
-          type="text"
-          placeholder="cidade"
-          class="pl-10"
-          v-model="city"
-        />
-        <p>Cidade: {{ city }}</p>
-        <Button>Cadastrar</Button>
-      </div>
-    </nav>
-  </main>
-</template>
-
-<style>
-@media (min-width: 1024px) {
-  .about {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-  }
+enum Sports {
+  Football = 'Football/Soccer',
+  Basketball = 'Basketball',
+  Baseball = 'Baseball',
+  Hockey = 'Hockey (Ice)',
+  None = "I don't like sports",
 }
-</style>
+
+const schema = z.object({
+  username: z
+    .string({
+      required_error: 'Username is required.',
+    })
+    .min(2, {
+      message: 'Username must be at least 2 characters.',
+    }),
+
+  password: z
+    .string({
+      required_error: 'Password is required.',
+    })
+    .min(8, {
+      message: 'Password must be at least 8 characters.',
+    }),
+
+  favouriteNumber: z.coerce
+    .number({
+      invalid_type_error: 'Favourite number must be a number.',
+    })
+    .min(1, {
+      message: 'Favourite number must be at least 1.',
+    })
+    .max(10, {
+      message: 'Favourite number must be at most 10.',
+    })
+    .default(1)
+    .optional(),
+
+  acceptTerms: z.boolean().refine(value => value, {
+    message: 'You must accept the terms and conditions.',
+    path: ['acceptTerms'],
+  }),
+
+  sendMeMails: z.boolean().optional(),
+
+  birthday: z.coerce.date().optional(),
+
+  color: z.enum(['red', 'green', 'blue']).optional(),
+
+  // Another enum example
+  marshmallows: z.enum(['not many', 'a few', 'a lot', 'too many']),
+
+  // Native enum example
+  sports: z.nativeEnum(Sports).describe('What is your favourite sport?'),
+
+  bio: z
+    .string()
+    .min(10, {
+      message: 'Bio must be at least 10 characters.',
+    })
+    .max(160, {
+      message: 'Bio must not be longer than 30 characters.',
+    })
+    .optional(),
+
+  customParent: z.string().optional(),
+
+  file: z.string().optional(),
+})
+
+function onSubmit(values: Record<string, any>) {
+  toast({
+    title: 'You submitted the following values:',
+    description: h(
+      'pre',
+      { class: 'mt-2 w-[340px] rounded-md bg-slate-950 p-4' },
+      h('code', { class: 'text-white' }, JSON.stringify(values, null, 2)),
+    ),
+  })
+}
+</script>
+
+<template>
+  <AutoForm
+    class="w-2/3 space-y-6"
+    :schema="schema"
+    :field-config="{
+      password: {
+        label: 'Your secure password',
+        inputProps: {
+          type: 'password',
+          placeholder: '••••••••',
+        },
+      },
+      favouriteNumber: {
+        description: 'Your favourite number between 1 and 10.',
+      },
+      acceptTerms: {
+        label: 'Accept terms and conditions.',
+        inputProps: {
+          required: true,
+        },
+      },
+
+      birthday: {
+        description: 'We need your birthday to send you a gift.',
+      },
+
+      sendMeMails: {
+        component: 'switch',
+      },
+
+      bio: {
+        component: 'textarea',
+      },
+
+      marshmallows: {
+        label: 'How many marshmallows fit in your mouth?',
+        component: 'radio',
+      },
+
+      file: {
+        label: 'Text file',
+        component: 'file',
+      },
+    }"
+    @submit="onSubmit"
+  >
+    <template #acceptTerms="slotProps">
+      <AutoFormField v-bind="slotProps" />
+      <div class="!mt-2 text-sm">
+        I agree to the
+        <button class="text-primary underline">terms and conditions</button>.
+      </div>
+    </template>
+
+    <template #customParent="slotProps">
+      <div class="flex items-end space-x-2">
+        <AutoFormField v-bind="slotProps" class="w-full" />
+        <Button type="button"> Check </Button>
+      </div>
+    </template>
+
+    <Button type="submit"> Submit </Button>
+  </AutoForm>
+</template>

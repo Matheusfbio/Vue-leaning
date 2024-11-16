@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-export interface UserProfile {
+export interface DiaristProfile {
   id: number
   documentId: string
   name: string
@@ -34,14 +34,12 @@ export interface UserData {
   createdAt: string
   updatedAt: string
   publishedAt: string
-  perfil: UserProfile[]
+  perfil: DiaristProfile[]
 }
 
 export default async function fetchUsers(): Promise<UserData[]> {
   try {
-    const response = await axios.get(
-      'http://localhost:1337/api/diaristas?populate=*',
-    )
+    const response = await axios.post('http://localhost:1337/api/diaristas')
     return response.data.data // Retorna apenas o array de dados
   } catch (error) {
     console.error('Erro ao buscar os usuários:', error)
