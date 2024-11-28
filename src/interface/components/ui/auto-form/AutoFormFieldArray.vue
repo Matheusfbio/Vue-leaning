@@ -5,10 +5,10 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@/interface/components/ui/accordion'
-import { Button } from '@/interface/components/ui/button'
-import { FormItem, FormMessage } from '@/interface/components/ui/form'
-import { Separator } from '@/interface/components/ui/separator'
+} from '@/presentaion/components/ui/accordion'
+import { Button } from '@/presentaion/components/ui/button'
+import { FormItem, FormMessage } from '@/presentaion/components/ui/form'
+import { Separator } from '@/presentaion/components/ui/separator'
 import { PlusIcon, TrashIcon } from 'lucide-vue-next'
 import { FieldArray, FieldContextKey, useField } from 'vee-validate'
 import { computed, provide } from 'vue'

@@ -6,9 +6,9 @@ import {
   FormField,
   FormItem,
   FormMessage,
-} from '@/interface/components/ui/form'
-import { Input } from '@/interface/components/ui/input'
-import { Textarea } from '@/interface/components/ui/textarea'
+} from '@/presentaion/components/ui/form'
+import { Input } from '@/presentaion/components/ui/input'
+import { Textarea } from '@/presentaion/components/ui/textarea'
 import { computed } from 'vue'
 import AutoFormLabel from './AutoFormLabel.vue'
 import { beautifyObjectName } from './utils'

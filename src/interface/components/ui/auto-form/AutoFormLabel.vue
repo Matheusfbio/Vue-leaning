@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { FormLabel } from '@/interface/components/ui/form'
+import { FormLabel } from '@/presentaion/components/ui/form'
 
 defineProps<{
   required?: boolean

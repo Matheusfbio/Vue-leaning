@@ -6,8 +6,8 @@ import {
   FormField,
   FormItem,
   FormMessage,
-} from '@/interface/components/ui/form'
-import { Input } from '@/interface/components/ui/input'
+} from '@/presentaion/components/ui/form'
+import { Input } from '@/presentaion/components/ui/input'
 import AutoFormLabel from './AutoFormLabel.vue'
 import { beautifyObjectName } from './utils'
 

@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import type { FieldProps } from './interface'
-import { Button } from '@/interface/components/ui/button'
+import { Button } from '@/presentaion/components/ui/button'
 import {
   FormControl,
   FormDescription,
   FormField,
   FormItem,
   FormMessage,
-} from '@/interface/components/ui/form'
-import { Input } from '@/interface/components/ui/input'
+} from '@/presentaion/components/ui/form'
+import { Input } from '@/presentaion/components/ui/input'
 import { TrashIcon } from 'lucide-vue-next'
 import { ref } from 'vue'
 import AutoFormLabel from './AutoFormLabel.vue'

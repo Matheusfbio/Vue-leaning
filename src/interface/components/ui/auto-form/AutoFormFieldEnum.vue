@@ -6,19 +6,19 @@ import {
   FormField,
   FormItem,
   FormMessage,
-} from '@/interface/components/ui/form'
-import { Label } from '@/interface/components/ui/label'
+} from '@/presentaion/components/ui/form'
+import { Label } from '@/presentaion/components/ui/label'
 import {
   RadioGroup,
   RadioGroupItem,
-} from '@/interface/components/ui/radio-group'
+} from '@/presentaion/components/ui/radio-group'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/interface/components/ui/select'
+} from '@/presentaion/components/ui/select'
 import AutoFormLabel from './AutoFormLabel.vue'
 import { beautifyObjectName } from './utils'
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Input } from '@/interface/components/ui/input'
+import { Input } from '@/presentaion/components/ui/input'
 </script>
 <template>
   <main class="flex">

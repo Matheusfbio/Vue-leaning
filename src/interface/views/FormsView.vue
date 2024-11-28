@@ -1,153 +1,262 @@
-<script setup lang="ts">
-import { AutoForm, AutoFormField } from '@/interface/components/ui/auto-form'
-import { Button } from '@/interface/components/ui/button'
-import { toast } from '@/interface/components/ui/toast'
-import { h } from 'vue'
-import * as z from 'zod'
+<template>
+  <div class="form-container">
+    <form @submit.prevent="handleSubmit">
+      <div>
+        <label for="nome">Nome</label>
+        <input
+          v-model="formData.nome"
+          id="nome"
+          type="text"
+          placeholder="Digite seu nome"
+        />
+      </div>
 
-enum Sports {
-  Football = 'Football/Soccer',
-  Basketball = 'Basketball',
-  Baseball = 'Baseball',
-  Hockey = 'Hockey (Ice)',
-  None = "I don't like sports",
-}
+      <div>
+        <label for="contato">Contato</label>
+        <input
+          v-model="formData.contato"
+          id="contato"
+          type="text"
+          placeholder="Digite seu contato"
+        />
+      </div>
 
-const schema = z.object({
-  username: z
-    .string({
-      required_error: 'Username is required.',
+      <div>
+        <label for="endereco">Endereço</label>
+        <input
+          v-model="formData.endereco"
+          id="endereco"
+          type="text"
+          placeholder="Digite seu endereço"
+        />
+      </div>
+
+      <div>
+        <label for="email">Email</label>
+        <input
+          v-model="formData.email"
+          id="email"
+          type="email"
+          placeholder="Digite seu email"
+        />
+      </div>
+
+      <div>
+        <label for="cidade">Cidade</label>
+        <input
+          v-model="formData.cidade"
+          id="cidade"
+          type="text"
+          placeholder="Digite sua cidade"
+        />
+      </div>
+
+      <div>
+        <label for="foto">Foto do Perfil</label>
+        <input
+          id="foto"
+          type="file"
+          @change="handleFileChange"
+          accept="image/*"
+        />
+      </div>
+
+      <div v-if="previewImage">
+        <p>Pré-visualização da imagem:</p>
+        <img :src="previewImage" alt="Pré-visualização" class="preview-img" />
+      </div>
+
+      <div v-if="isLoading">
+        <p>Enviando...</p>
+      </div>
+
+      <div v-if="errorMessage" class="error">
+        <p>{{ errorMessage }}</p>
+      </div>
+
+      <div v-if="successMessage" class="success">
+        <p>{{ successMessage }}</p>
+      </div>
+
+      <button type="submit" :disabled="isLoading">Enviar</button>
+    </form>
+  </div>
+</template>
+
+<script lang="ts">
+import { ref } from 'vue'
+import axios from 'axios'
+
+export default {
+  setup() {
+    const formData = ref({
+      nome: '',
+      contato: '',
+      endereco: '',
+      email: '',
+      cidade: '',
     })
-    .min(2, {
-      message: 'Username must be at least 2 characters.',
-    }),
 
-  password: z
-    .string({
-      required_error: 'Password is required.',
-    })
-    .min(8, {
-      message: 'Password must be at least 8 characters.',
-    }),
+    const selectedFile = ref<File | null>(null)
+    const previewImage = ref<string | null>(null)
 
-  favouriteNumber: z.coerce
-    .number({
-      invalid_type_error: 'Favourite number must be a number.',
-    })
-    .min(1, {
-      message: 'Favourite number must be at least 1.',
-    })
-    .max(10, {
-      message: 'Favourite number must be at most 10.',
-    })
-    .default(1)
-    .optional(),
+    const isLoading = ref(false)
+    const successMessage = ref('')
+    const errorMessage = ref('')
 
-  acceptTerms: z.boolean().refine(value => value, {
-    message: 'You must accept the terms and conditions.',
-    path: ['acceptTerms'],
-  }),
+    const handleFileChange = (event: Event) => {
+      const target = event.target as HTMLInputElement
+      if (target.files && target.files[0]) {
+        selectedFile.value = target.files[0]
+        const reader = new FileReader()
 
-  sendMeMails: z.boolean().optional(),
+        reader.onload = () => {
+          previewImage.value = reader.result as string
+        }
 
-  birthday: z.coerce.date().optional(),
+        reader.readAsDataURL(selectedFile.value)
+        console.log('Arquivo selecionado:', selectedFile.value) // Debug
+      }
+    }
 
-  color: z.enum(['red', 'green', 'blue']).optional(),
+    const isFormValid = () => {
+      return (
+        formData.value.nome &&
+        formData.value.contato &&
+        formData.value.endereco &&
+        formData.value.email &&
+        formData.value.cidade &&
+        selectedFile.value
+      )
+    }
 
-  // Another enum example
-  marshmallows: z.enum(['not many', 'a few', 'a lot', 'too many']),
+    const handleSubmit = async () => {
+      try {
+        errorMessage.value = ''
+        successMessage.value = ''
+        isLoading.value = true
 
-  // Native enum example
-  sports: z.nativeEnum(Sports).describe('What is your favourite sport?'),
+        // Validar campos
+        if (!isFormValid()) {
+          errorMessage.value =
+            'Por favor, preencha todos os campos corretamente.'
+          return
+        }
 
-  bio: z
-    .string()
-    .min(10, {
-      message: 'Bio must be at least 10 characters.',
-    })
-    .max(160, {
-      message: 'Bio must not be longer than 30 characters.',
-    })
-    .optional(),
+        // **Upload do arquivo**
+        const uploadFormData = new FormData()
+        uploadFormData.append('files', selectedFile.value || new File([], ''))
 
-  customParent: z.string().optional(),
+        const uploadResponse = await axios.post(
+          'http://localhost:1337/api/upload',
+          uploadFormData,
+          { headers: { 'Content-Type': 'multipart/form-data' } },
+        )
 
-  file: z.string().optional(),
-})
+        if (!uploadResponse.data || !uploadResponse.data[0]?.id) {
+          throw new Error('Erro ao fazer upload do arquivo.')
+        }
 
-function onSubmit(values: Record<string, any>) {
-  toast({
-    title: 'You submitted the following values:',
-    description: h(
-      'pre',
-      { class: 'mt-2 w-[340px] rounded-md bg-slate-950 p-4' },
-      h('code', { class: 'text-white' }, JSON.stringify(values, null, 2)),
-    ),
-  })
+        const uploadedFileId = uploadResponse.data[0].id
+
+        // **Associação dos dados do diarista com o arquivo**
+        const diaristData = {
+          nome: formData.value.nome,
+          contato: formData.value.contato,
+          endereco: formData.value.endereco,
+          email: formData.value.email,
+          cidade: formData.value.cidade,
+          perfil: [uploadedFileId], // Associando o ID da imagem
+        }
+
+        // Envio dos dados para criar o diarista
+        const diaristResponse = await axios.post(
+          'http://localhost:1337/api/diaristas',
+          { data: diaristData },
+          { headers: { 'Content-Type': 'application/json' } },
+        )
+
+        if (diaristResponse.data) {
+          successMessage.value = 'Diarista cadastrado com sucesso!'
+          formData.value = {
+            nome: '',
+            contato: '',
+            endereco: '',
+            email: '',
+            cidade: '',
+          }
+          selectedFile.value = null
+          previewImage.value = null
+        }
+      } catch (error) {
+        console.error('Erro ao cadastrar:', error)
+        errorMessage.value =
+          'Erro ao cadastrar o diarista. Por favor, tente novamente.'
+      } finally {
+        isLoading.value = false
+      }
+    }
+
+    return {
+      formData,
+      selectedFile,
+      previewImage,
+      isLoading,
+      successMessage,
+      errorMessage,
+      handleFileChange,
+      handleSubmit,
+    }
+  },
 }
 </script>
 
-<template>
-  <AutoForm
-    class="w-2/3 space-y-6"
-    :schema="schema"
-    :field-config="{
-      password: {
-        label: 'Your secure password',
-        inputProps: {
-          type: 'password',
-          placeholder: '••••••••',
-        },
-      },
-      favouriteNumber: {
-        description: 'Your favourite number between 1 and 10.',
-      },
-      acceptTerms: {
-        label: 'Accept terms and conditions.',
-        inputProps: {
-          required: true,
-        },
-      },
+<style scoped>
+.form-container {
+  width: 300px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
 
-      birthday: {
-        description: 'We need your birthday to send you a gift.',
-      },
+form {
+  display: flex;
+  flex-direction: column;
+}
 
-      sendMeMails: {
-        component: 'switch',
-      },
+input {
+  padding: 8px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
 
-      bio: {
-        component: 'textarea',
-      },
+button {
+  padding: 8px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+}
 
-      marshmallows: {
-        label: 'How many marshmallows fit in your mouth?',
-        component: 'radio',
-      },
+button:disabled {
+  background-color: #ccc;
+}
 
-      file: {
-        label: 'Text file',
-        component: 'file',
-      },
-    }"
-    @submit="onSubmit"
-  >
-    <template #acceptTerms="slotProps">
-      <AutoFormField v-bind="slotProps" />
-      <div class="!mt-2 text-sm">
-        I agree to the
-        <button class="text-primary underline">terms and conditions</button>.
-      </div>
-    </template>
+.success {
+  color: green;
+}
 
-    <template #customParent="slotProps">
-      <div class="flex items-end space-x-2">
-        <AutoFormField v-bind="slotProps" class="w-full" />
-        <Button type="button"> Check </Button>
-      </div>
-    </template>
+.error {
+  color: red;
+}
 
-    <Button type="submit"> Submit </Button>
-  </AutoForm>
-</template>
+.preview-img {
+  max-width: 200px;
+  max-height: 200px;
+  margin-top: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+</style>

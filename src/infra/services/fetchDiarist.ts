@@ -23,7 +23,7 @@ export interface DiaristProfile {
   url: string
 }
 
-export interface UserData {
+export interface DiaristData {
   id: number
   documentId: string
   nome: string
@@ -37,11 +37,13 @@ export interface UserData {
   perfil: DiaristProfile[]
 }
 
-export default async function fetchUsers(): Promise<UserData[]> {
+export default async function fetchUsers(): Promise<DiaristData[]> {
   try {
-    const response = await axios.get(
-      'http://localhost:1337/api/diaristas?populate=*',
-    )
+    const response = await axios.get('http://localhost:1337/api/diaristas', {
+      params: { populate: 'perfil' }, // Certifique-se de incluir `populate` se o campo for uma relação no Strapi
+    })
+    console.log(response.data) // Verifique os dados
+
     return response.data.data // Retorna apenas o array de dados
   } catch (error) {
     console.error('Erro ao buscar os usuários:', error)

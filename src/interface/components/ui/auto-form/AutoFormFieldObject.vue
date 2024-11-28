@@ -6,8 +6,8 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@/interface/components/ui/accordion'
-import { FormItem } from '@/interface/components/ui/form'
+} from '@/presentaion/components/ui/accordion'
+import { FormItem } from '@/presentaion/components/ui/form'
 import { FieldContextKey, useField } from 'vee-validate'
 import { computed, provide } from 'vue'
 import AutoFormField from './AutoFormField.vue'

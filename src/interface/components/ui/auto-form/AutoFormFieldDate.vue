@@ -1,19 +1,19 @@
 <script setup lang="ts">
 import type { FieldProps } from './interface'
-import { Button } from '@/interface/components/ui/button'
-import { Calendar } from '@/interface/components/ui/calendar'
+import { Button } from '@/presentaion/components/ui/button'
+import { Calendar } from '@/presentaion/components/ui/calendar'
 import {
   FormControl,
   FormDescription,
   FormField,
   FormItem,
   FormMessage,
-} from '@/interface/components/ui/form'
+} from '@/presentaion/components/ui/form'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/interface/components/ui/popover'
+} from '@/presentaion/components/ui/popover'
 import { cn } from '@/lib/utils'
 
 import { DateFormatter, getLocalTimeZone } from '@internationalized/date'
