@@ -5,7 +5,7 @@ export default async function postDiarist(
   diaristData: { [key: string]: unknown },
   file: File,
 ): Promise<DiaristData> {
-  const API_URL = process.env.API_URL || 'http://localhost:1337'
+  const BASE_URL = import.meta.env.VITE_STRAPI_BASE_URL
 
   try {
     // Passo 1: Fazer upload do arquivo
@@ -13,7 +13,7 @@ export default async function postDiarist(
     uploadData.append('files', file)
 
     const uploadResponse = await axios.post(
-      `${API_URL}/api/upload/`,
+      `${BASE_URL}/api/upload/`,
       uploadData,
       {
         headers: {
@@ -33,9 +33,9 @@ export default async function postDiarist(
 
     console.log('DiaristData antes do envio:', diaristData)
 
-    // Passo 2: Enviar dados do diarista
+    // Enviar dados do diarista
     const response = await axios.post(
-      `${API_URL}/api/diaristas?populate=perfil`,
+      `${BASE_URL}/api/diaristas?populate=perfil`,
       { data: diaristData },
       {
         headers: {

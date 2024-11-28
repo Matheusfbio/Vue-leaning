@@ -84,8 +84,8 @@
 </template>
 
 <script lang="ts">
+import postDiarist from '@/infra/services/postDiarist'
 import { ref } from 'vue'
-import axios from 'axios'
 
 export default {
   setup() {
@@ -143,40 +143,18 @@ export default {
           return
         }
 
-        // **Upload do arquivo**
-        const uploadFormData = new FormData()
-        uploadFormData.append('files', selectedFile.value || new File([], ''))
-
-        const uploadResponse = await axios.post(
-          'http://localhost:1337/api/upload',
-          uploadFormData,
-          { headers: { 'Content-Type': 'multipart/form-data' } },
-        )
-
-        if (!uploadResponse.data || !uploadResponse.data[0]?.id) {
-          throw new Error('Erro ao fazer upload do arquivo.')
+        if (!selectedFile.value) {
+          errorMessage.value = 'Por favor, adicione uma foto de perfil.'
+          return
         }
 
-        const uploadedFileId = uploadResponse.data[0].id
-
-        // **Associação dos dados do diarista com o arquivo**
-        const diaristData = {
-          nome: formData.value.nome,
-          contato: formData.value.contato,
-          endereco: formData.value.endereco,
-          email: formData.value.email,
-          cidade: formData.value.cidade,
-          perfil: [uploadedFileId], // Associando o ID da imagem
-        }
-
-        // Envio dos dados para criar o diarista
-        const diaristResponse = await axios.post(
-          'http://localhost:1337/api/diaristas',
-          { data: diaristData },
-          { headers: { 'Content-Type': 'application/json' } },
+        // **Chamar a função postDiarist para fazer o upload do arquivo e salvar os dados**
+        const diaristResponse = await postDiarist(
+          formData.value,
+          selectedFile.value,
         )
 
-        if (diaristResponse.data) {
+        if (diaristResponse) {
           successMessage.value = 'Diarista cadastrado com sucesso!'
           formData.value = {
             nome: '',
