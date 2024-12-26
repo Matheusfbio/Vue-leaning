@@ -1,5 +1,5 @@
 <script lang="ts">
-import fetchDiarist from '@/infra/services/fetchDiarist'
+import fetchDiarist from '@/diarist/services/fetchDiarist'
 import axios from 'axios'
 import perfilNull from '@/assets/img/perfil-null.png'
 import { defineComponent, onMounted, ref } from 'vue'
@@ -85,7 +85,7 @@ export default defineComponent({
         class="flex flex-col border-2 rounded-xl border-black p-6 m-3 justify-center items-center"
       >
         <img :src="diarist.perfil" width="150" alt="Imagem do perfil" />
-        <p>URL da imagem: {{ diarist.perfil }}</p>
+        <!-- <p>URL da imagem: {{ diarist.perafil }}</p> -->
         <!-- Log visual -->
         <strong>{{ diarist.nome }}</strong>
         <p>{{ diarist.email }}</p>

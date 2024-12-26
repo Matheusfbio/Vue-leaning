@@ -1,4 +1,7 @@
 <template>
+  <h3 class="flex justify-center p-3 text-2xl">
+    Formulario de cadastro do(a) diarista
+  </h3>
   <div class="form-container">
     <form @submit.prevent="handleSubmit">
       <div>
@@ -84,11 +87,12 @@
 </template>
 
 <script lang="ts">
-import postDiarist from '@/infra/services/postDiarist'
+import postDiarist from '@/diarist/services/postDiarist'
 import { ref } from 'vue'
 
 export default {
   setup() {
+    // const diaristManager = DiaristManager(HttpDiaristRepository())
     const formData = ref({
       nome: '',
       contato: '',
@@ -192,9 +196,10 @@ export default {
 <style scoped>
 .form-container {
   width: 300px;
+  flex-direction: column;
   margin: 0 auto;
-  padding: 20px;
-  border: 1px solid #ccc;
+  padding: 40px;
+  /* border: 1px solid #ccc; */
   border-radius: 8px;
 }
 

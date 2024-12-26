@@ -14,4 +14,8 @@ describe('ShowUsers.vue', () => {
     const spy = vi.spyOn(ShowUsers, 'render')
     expect(spy).toHaveLength(6)
   })
+
+  // test('teste', () => {
+  //   expect(ShowUsers).toBe
+  // })
 })
